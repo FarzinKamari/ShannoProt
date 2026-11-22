@@ -12,7 +12,7 @@ ShannoProt
 
 
 # Description
-<p align="justify">How evenly do organisms use the amino-acid alphabet? This repository holds the Python and R code and the data tables of the article <i>Amino-Acid Evenness Across the Tree of Life and Protein Correlates of Rare Human Disease</i>. The compositional evenness index (CEI), the Shannon entropy of amino-acid composition normalized to its maximum, is computed for about 180 million proteins of 29,041 complete proteomes (UniProt release 2020_02). It is compared between the two clades of each bifurcation of the tree of life, at the level of proteomes, species and genera, and with the CEI expected from random translation at the GC content of each genome. Extended to protein–protein interaction networks as the neighborhood excess entropy (NEE), it is compared with protein length, the number of interactions, gene age and CEI as an indicator of the involvement of 18,471 human proteins in rare genetic disease (Orphanet).</p>
+<p align="justify">How evenly do organisms use the amino-acid alphabet? This repository holds the Python and R code and the data tables of the article <i>Amino-Acid Evenness Across the Tree of Life and Protein-Level Correlates of Rare Diseases in Humans</i>. The compositional evenness index (CEI), the Shannon entropy of amino-acid composition normalized to its maximum, is computed for about 180 million proteins of 29,041 complete proteomes (UniProt release 2020_02). It is compared between the two clades of each bifurcation of the tree of life, at the level of proteomes, species and genera, with the CEI expected from random translation at the GC content of each genome, and along the bacterial and archaeal phylogeny of the Genome Taxonomy Database (GTDB). Extended to protein–protein interaction networks as the neighborhood excess entropy (NEE), it is compared with protein length, the number of interactions, gene age and CEI as an indicator of the involvement of 18,471 human proteins in rare genetic disease (Orphanet).</p>
 
 <p align="center">
   <img src="img/Workflow.png" width=800>
@@ -32,13 +32,13 @@ ShannoProt
 
 
 # Quick links to main codes
-* **runCAIR** (CEI of all proteomes, Table S1). Python: [runCAIR](ShannoProt/runCAIR)
-* **runGC** (CEI expected under random translation at the genome GC content). Python: [runGC](ShannoProt/runGC)
-* **CEI comparisons** (bifurcation tests and figures of the tree of life). R: [CAIR_comparisons](R_codes/CAIR_comparisons)
+* **runCAIR** (CEI of all proteomes, Table S1, and its check in the current UniProt release). Python: [runCAIR](ShannoProt/runCAIR)
+* **runGC** (CEI expected under random translation at the genome GC content; GTDB genomes of the proteomes). Python: [runGC](ShannoProt/runGC)
+* **CEI comparisons** (bifurcation tests, phylogenetic signal and figures of the tree of life). R: [CAIR_comparisons](R_codes/CAIR_comparisons)
 * **runEMIP** (NEE and disease indicators of the human proteins). Python: [runEMIP](ShannoProt/runEMIP)
 * **runNEE** (NEE decomposition, null models, study-bias covariates and statistics of the human analysis). Python: [runNEE](ShannoProt/runNEE)
 * **Disease analyses** (figures of the human proteins). R: [EMIP_analyses](R_codes/EMIP_analyses)
-* **runTables** (Supplementary Tables S1–S5). Python: [runTables](ShannoProt/runTables)
+* **runTables** (Supplementary Tables S1–S6). Python: [runTables](ShannoProt/runTables)
 
 
 # The compositional evenness index (CEI)
@@ -46,11 +46,11 @@ ShannoProt
 
 $$\mathrm{CEI} = -\sum_{i=1}^{n} p_i \log_{22} p_i$$
 
-<p align="justify">CEI is Pielou's evenness on this alphabet: it equals 1 when all 22 amino acids are used equally often. B, Z and J are split between their two possible residues, and X is not counted. For single proteins, the Miller–Madow corrected CEI<sub>MM</sub> = CEI + (m − 1)/(2 L ln 22) is also used, where m is the number of residue types observed and L the length of the protein.</p>
+<p align="justify">CEI is Pielou's evenness on this alphabet: it equals 1 when all 22 amino acids are used equally often. B, Z and J are split between their two possible residues, and X is not counted. For single proteins, the Miller–Madow-corrected CEI<sub>MM</sub> = CEI + (m − 1)/(2 L ln 22) is also used, where m is the number of residue types observed and L the length of the protein.</p>
 
 
 # CEI across the tree of life
-<p align="justify"><a href="R_codes/CAIR_comparisons/Bifurcation%20tests/Bifurcation%20tests.R">Bifurcation tests.R</a> compares the CEI of the two clades of each bifurcation of the tree of life with the Brunner–Munzel test, with range-preserving 95% confidence intervals of the relative effect, Benjamini–Hochberg adjustment, Vargha–Delaney effect classes and studentized permutation tests for small clades, at the level of proteomes, species and genera. <a href="R_codes/CAIR_comparisons/CAIR%20comparison%20violin%20plots/Violin%20Plots.R">Violin Plots.R</a> draws these comparisons. The same tests are repeated on the GC-adjusted CEI, the difference between the observed CEI and the CEI expected under random translation at the GC content of the genome (<a href="ShannoProt/runGC">runGC</a>, <a href="R_codes/CAIR_comparisons/GC%20null/CEI%20vs%20GC.R">CEI vs GC.R</a>).</p>
+<p align="justify"><a href="R_codes/CAIR_comparisons/Bifurcation%20tests/Bifurcation%20tests.R">Bifurcation tests.R</a> compares the CEI of the two clades of each bifurcation of the tree of life with the Brunner–Munzel test, with range-preserving 95% confidence intervals of the relative effect, Benjamini–Hochberg adjustment, Vargha–Delaney effect classes and studentized permutation tests for small clades, at the level of proteomes, species and genera. <a href="R_codes/CAIR_comparisons/CAIR%20comparison%20violin%20plots/Violin%20Plots.R">Violin Plots.R</a> draws these comparisons. The same tests are repeated on the GC-adjusted CEI, the difference between the observed CEI and the CEI expected under random translation at the GC content of the genome, and on the expected CEI itself (<a href="ShannoProt/runGC">runGC</a>, <a href="R_codes/CAIR_comparisons/GC%20null/CEI%20vs%20GC.R">CEI vs GC.R</a>). <a href="R_codes/CAIR_comparisons/Phylogenetic%20signal/Phylogenetic%20signal.R">Phylogenetic signal.R</a> estimates the phylogenetic signal (Pagel's λ) of CEI, genome GC, the expected CEI and the GC-adjusted CEI, and fits phylogenetic generalized least squares of CEI on GC, on the species-level GTDB phylogenies (release 232) with one value per GTDB species; <a href="ShannoProt/runGC/GTDB_phylogeny_data.py">GTDB_phylogeny_data.py</a> matches the proteomes to GTDB genomes and tabulates the proteomes above the highest CEI of the uniform-GC null by genome quality.</p>
 <p align="center">
   <img src="img/CEI_comparisons.png" width=800>
 </p>
@@ -65,7 +65,7 @@ $$\mathrm{NEE} = L_N\,\mathrm{CEI}_N - \sum_{j=1}^{k} L_j\,\mathrm{CEI}_j = L_\P
 
 
 # Human disease indicators
-<p align="justify">The human proteins of UniProt release 2020_02 are grouped by the occurrence of their rare diseases in Orphanet (no recorded rare disease, extremely rare, rare). <a href="ShannoProt/runNEE">runNEE</a> compares NEE, protein length, the number of interactions (PICKLE 2.5), gene age and CEI as indicators: AUC and Kendall's τ<sub>b</sub> with bootstrap intervals, logistic and proportional-odds models, null models of NEE (composition shuffle and degree-preserving rewiring) and study-bias checks with the systematic interactome HuRI and with PubMed counts. <a href="R_codes/EMIP_analyses/Human%20proteome%20analysis/DTK%20test%20%26%20Errorbars.R">DTK test & Errorbars.R</a> draws the indicators by disease category and gene age (Dunnett–Tukey–Kramer test).</p>
+<p align="justify">The human proteins of UniProt release 2020_02 are grouped by the occurrence of their rare diseases in Orphanet (no recorded rare disease, extremely rare, rare). <a href="ShannoProt/runNEE">runNEE</a> compares NEE, protein length, the number of interactions (PICKLE 2.5), gene age and CEI as indicators: AUC and Kendall's τ<sub>b</sub> with bootstrap intervals, logistic and proportional-odds models, null models of NEE (composition shuffle and degree-preserving rewiring), study-bias checks with the systematic interactome HuRI and with PubMed counts, other definitions of the disease categories (<a href="ShannoProt/runNEE/Disease_definition_sensitivity.py">Disease_definition_sensitivity.py</a>) and covariates of protein length from gnomAD, GTEx and a set of core essential genes (<a href="ShannoProt/runNEE/Length_covariates.py">Length_covariates.py</a>). <a href="R_codes/EMIP_analyses/Human%20proteome%20analysis/DTK%20test%20%26%20Errorbars.R">DTK test & Errorbars.R</a> draws the indicators by disease category and gene age (Dunnett–Tukey–Kramer test).</p>
 <p align="center">
   <img src="img/Disease_indicators.png" width=800>
 </p>
@@ -78,11 +78,11 @@ Python 3 (the article used Python 3.11) with the following packages:
 ```sh
 pip3 install requests biopython numpy pandas import_ipynb scipy scikit-learn statsmodels python-igraph openpyxl
 ```
-R (the article used R 4.6) with the packages brunnermunzel, data.table, DTK, ggplot2, ggpubr, HH, igraph, plotly (with [orca](https://github.com/plotly/orca) for the SVG export of the violin plots), processx, readxl, svglite, tidyverse and Cairo. The scripts install missing packages themselves, except DTK, which is archived on CRAN:
+R (the article used R 4.6) with the packages ape, brunnermunzel, data.table, DTK, ggplot2, ggpubr, HH, igraph, phylolm, plotly (with [orca](https://github.com/plotly/orca) for the SVG export of the violin plots), processx, readxl, svglite, tidyverse and Cairo. The scripts install missing packages themselves, except DTK, which is archived on CRAN:
 ```r
 install.packages("https://cran.r-project.org/src/contrib/Archive/DTK/DTK_3.5.tar.gz", repos = NULL, type = "source")
 ```
-Versions used for the article: Python 3.11.18 with NumPy 2.4.6, pandas 3.1.1, Biopython 1.88, SciPy 1.17.1, scikit-learn 1.9.1, statsmodels 0.15.0 and python-igraph 1.0.0; R 4.6.2 with brunnermunzel 2.0, DTK 3.5, ggpubr 1.0.0, HH 3.1-53 and plotly 4.12.1.
+Versions used for the article: Python 3.11.18 with NumPy 2.4.6, pandas 3.1.1, Biopython 1.88, SciPy 1.17.1, scikit-learn 1.9.1, statsmodels 0.15.0 and python-igraph 1.0.0; R 4.6.2 with brunnermunzel 2.0, DTK 3.5, ggpubr 1.0.0, HH 3.1-53, plotly 4.12.1, ape 5.8.1 and phylolm 2.6.5.
 
 ## Input files
 The tables of 2020 (CEI of all proteomes; disease indicators of all reported diseases and of all human proteins, with the Orphanet occurrences of 2020 and the [consensus gene ages](https://github.com/marcottelab/Gene-Ages)) are in [Supplementary_materials](Supplementary_materials), together with the tables of the article that the R scripts read. The new analyses also use the following public files, which should be placed, unpacked where noted, in the working folder (see below):
@@ -95,8 +95,12 @@ The tables of 2020 (CEI of all proteomes; disease indicators of all reported dis
 | `gene2pubmed.gz` | [NCBI Gene](https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz) | runNEE |
 | `assembly_summary_refseq.txt`, `assembly_summary_genbank.txt`, `assembly_summary_refseq_historical.txt`, `assembly_summary_genbank_historical.txt` | [NCBI assembly reports](https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/) | runGC |
 | `nodes.dmp`, `merged.dmp` (in `taxdump.tar.gz`) | [NCBI taxonomy](https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz) | runGC |
+| `bac120_metadata_r232.tsv.gz`, `ar53_metadata_r232.tsv.gz`, `bac120_r232.tree`, `ar53_r232.tree` | [GTDB release 232](https://data.gtdb.ecogenomic.org/releases/release232/232.0/) | runGC, Phylogenetic signal.R |
+| `gnomad.v2.1.1.lof_metrics.by_gene.txt.bgz` | [gnomAD v2.1.1](https://storage.googleapis.com/gcp-public-data--gnomad/release/2.1.1/constraint/gnomad.v2.1.1.lof_metrics.by_gene.txt.bgz) | runNEE |
+| `GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz` | [GTEx v8](https://storage.googleapis.com/adult-gtex/bulk-gex/v8/rna-seq/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz) | runNEE |
+| `CEGv2.txt` | [Core essential genes (Hart et al. 2017)](https://github.com/hart-lab/bagel) | runNEE |
 
-The NCBI files are updated continuously; the article used the files of 2026.
+The NCBI files are updated continuously; the article used the files of 2026. `runCAIR.py --current` downloads the UniProt reference proteomes it needs (release 2026_04 for the article) by itself.
 
 ## Running the analyses
 All steps are run from one working folder inside the repository, for example `Results`, which holds the files above and receives all outputs:
@@ -105,7 +109,9 @@ mkdir Results
 cd Results
 python ../ShannoProt/runNEE/runNEE.py
 python ../ShannoProt/runGC/runGC.py
+python ../ShannoProt/runCAIR/runCAIR.py --current
 Rscript "../R_codes/CAIR_comparisons/Bifurcation tests/Bifurcation tests.R"
+Rscript "../R_codes/CAIR_comparisons/Phylogenetic signal/Phylogenetic signal.R"
 Rscript "../R_codes/CAIR_comparisons/CAIR comparison violin plots/Violin Plots.R"
 Rscript "../R_codes/CAIR_comparisons/GC null/CEI vs GC.R"
 Rscript "../R_codes/CAIR_comparisons/Wave of Life/Wave of life.R"
@@ -113,20 +119,22 @@ Rscript "../R_codes/EMIP_analyses/Human proteome analysis/DTK test & Errorbars.R
 Rscript "../R_codes/EMIP_analyses/Network visualization/Human proteome networks.R"
 python ../ShannoProt/runTables/runTables.py
 ```
-<p align="justify">runNEE takes about one hour. With <code>--cds</code>, runGC also recalculates the null with the GC content of each codon position in one annotated genome per genus (it downloads about 11 GB of coding sequences). The R scripts read the tables they need from Supplementary_materials if they are not in the working folder, so each of them can also be run alone (Violin Plots.R after Bifurcation tests.R).</p>
+<p align="justify">runNEE takes about one hour. With <code>--cds</code>, runGC also recalculates the null with the GC content of each codon position in one annotated genome per genus (it downloads about 11 GB of coding sequences). The R scripts read the tables they need from Supplementary_materials if they are not in the working folder, so each of them can also be run alone (Violin Plots.R after Bifurcation tests.R; Phylogenetic signal.R needs the two GTDB tree files).</p>
 
 | Article | Script | Output in the working folder |
 |---|---|---|
-| Table 2, Tables S2 and S3 | [Bifurcation tests.R](R_codes/CAIR_comparisons/Bifurcation%20tests/Bifurcation%20tests.R) | Bifurcation tests (proteome).csv, (species).csv, (genus).csv, Bifurcation tests summary.csv and the same files of delta CEI |
+| Table 2, Tables S2 and S3 | [Bifurcation tests.R](R_codes/CAIR_comparisons/Bifurcation%20tests/Bifurcation%20tests.R) | Bifurcation tests (proteome).csv, (species).csv, (genus).csv, Bifurcation tests summary.csv and the same files of delta CEI and of CEI null |
+| Section 3.2, Table S3 | [runGC.py](ShannoProt/runGC/runGC.py), [Phylogenetic signal.R](R_codes/CAIR_comparisons/Phylogenetic%20signal/Phylogenetic%20signal.R) | Proteomes GTDB.csv, GTDB species values.csv, GC ceiling by genome quality.csv, Phylogenetic signal.csv |
 | Figure 2 | [Violin Plots.R](R_codes/CAIR_comparisons/CAIR%20comparison%20violin%20plots/Violin%20Plots.R) | Fig2B.svg |
 | Figure 3 | [runGC.py](ShannoProt/runGC/runGC.py), [CEI vs GC.R](R_codes/CAIR_comparisons/GC%20null/CEI%20vs%20GC.R) | GC null per proteome.csv, GC null summary by domain.csv, GC null summary by phylum.csv, GC null curve.csv, GC null maxima.csv, GC null distribution shape.csv, Fig3.svg |
 | Figure 4 | [Wave of life.R](R_codes/CAIR_comparisons/Wave%20of%20Life/Wave%20of%20life.R) | Fig3A.svg … Fig3G.svg (numbered as in the preprint) |
-| Tables 3–5, Sections 3.4–3.7 | [runNEE.py](ShannoProt/runNEE/runNEE.py) | NEE decomposition.csv, Study bias covariates.csv, NEE null models.csv, Human indicator statistics.json, Table_S5.csv |
+| Tables 3–5, Sections 3.4–3.7 | [runNEE.py](ShannoProt/runNEE/runNEE.py) | NEE decomposition.csv, Study bias covariates.csv, NEE null models.csv, Human indicator statistics.json, Table_S5.csv, Disease definition sensitivity.json, Length covariates.json |
+| Section 4.3, Table S6 | [runCAIR.py](ShannoProt/runCAIR/runCAIR.py) `--current` | Current release check.csv, Current release check summary.json |
 | Figure 5 | [DTK test & Errorbars.R](R_codes/EMIP_analyses/Human%20proteome%20analysis/DTK%20test%20%26%20Errorbars.R) | Fig5_ColouredAges.svg, Fig5_BlackMain.svg |
-| Figure 6 | [Human proteome networks.R](R_codes/EMIP_analyses/Network%20visualization/Human%20proteome%20networks.R) | Fig6A.svg … Fig6P.svg |
-| Tables S1–S5 | [runTables.py](ShannoProt/runTables/runTables.py) | Supplementary tables/Table_S1.xlsx … Table_S5.xlsx |
+| Figure S1 | [Human proteome networks.R](R_codes/EMIP_analyses/Network%20visualization/Human%20proteome%20networks.R) | Fig6A.svg … Fig6P.svg |
+| Tables S1–S6 | [runTables.py](ShannoProt/runTables/runTables.py) | Supplementary tables/Table_S1.xlsx … Table_S6.xlsx |
 
-<p align="justify">Figures 1 and S1 and the tree of Figure 2A are drawings. The figures of the article are in <a href="Figures">Figures</a>. <a href="R_codes/EMIP_analyses/Human%20proteome%20analysis/Likert%20plots.R">Likert plots.R</a> draws the indicators by rank of disease occurrence (Figure 5 of the preprint).</p>
+<p align="justify">Figures 1 and S2 and the tree of Figure 2A are drawings. The figures of the article are in <a href="Figures">Figures</a>. <a href="R_codes/EMIP_analyses/Human%20proteome%20analysis/Likert%20plots.R">Likert plots.R</a> draws the indicators by rank of disease occurrence (Figure 5 of the preprint).</p>
 
 <p align="justify">The proteome CEI values were computed in 2020 with runCAIR from <code>uniprot_sprot.fasta</code> and <code>uniprot_trembl.fasta</code> of UniProt release 2020_02 (about 100 GB) and the list of non-redundant proteomes; the disease indicators of 2020 with runEMIP from the PICKLE 2.5 file, the human proteome table of UniProt (UP000005640), the Orphanet occurrence file (<code>en_product9_prev</code>) and the consensus gene ages (see the headers of the programs and the toy data below).</p>
 
@@ -146,7 +154,7 @@ python Human_disease_category_indicators.py
 
 
 # Reference article
-Kamari, F.; Dadmand, S. Amino-Acid Evenness Across the Tree of Life and Protein Correlates of Rare Human Disease. *Biology* (under review).
+Kamari, F.; Dadmand, S. Amino-Acid Evenness Across the Tree of Life and Protein-Level Correlates of Rare Diseases in Humans. *Biology* (under review).
 
 Preprint: Kamari, F.; Dadmand, S. An Extension of Shannon's Entropy to Explain Taxa Diversity and Human Diseases. *bioRxiv* 2020. https://doi.org/10.1101/2020.08.03.233767
 

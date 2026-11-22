@@ -14,7 +14,8 @@
 # i.e. the probability that an organism of the upper clade has the lower CEI.
 # Input:  Complete_proteome_CAIRs.csv (Table S1); optionally "GC null per proteome.csv" (section 4)
 # Output: Bifurcation tests (proteome).csv, (species).csv, (genus).csv, Bifurcation tests summary.csv
-#         and, with the GC file, the same tables for the GC-adjusted CEI (Table S3)
+#         and, with the GC file, the same tables for the GC-adjusted CEI (Table S3) and, added in
+#         rev 26, for the CEI expected from the genome GC content alone (CEI null; Table S3)
 
 ## 0. Installing necessary packages ##
 #############################################################################################
@@ -283,33 +284,41 @@ summarize_tests("")
 ## 4. Tests on the GC-adjusted CEI (Table S3)       ##
 #############################################################################################
 # delta CEI = CEI - CEI expected under random translation at the genome GC content
-# (from "GC null per proteome.csv", Proteome_GC_null.py); only the proteomes with a GC value
+# (from "GC null per proteome.csv", Proteome_GC_null.py); only the proteomes with a GC value.
+# rev 26: the same tests on the expected CEI itself (CEI null), i.e. how much of the taxonomic
+# pattern of CEI the genome GC content alone predicts
 gc_file <- "GC null per proteome.csv"
 if (!file.exists(gc_file)){
   gc_file <- "../Supplementary_materials/CAIR_supplementary_files/GC null per proteome.csv" # the copy in the repository
 }
 if (file.exists(gc_file)){
-  gc <- fread(gc_file, select = c("Organism_ID", "Delta CEI"))
-  colnames(gc) <- c("org", "dcei")
-  gc <- gc[!is.na(gc$dcei), ] # proteomes without a matched genome assembly are left out (not counted as missing values)
-  proteomes <- merge(proteomes, gc, by = "org")
-  proteomes$cair <- proteomes$dcei # the tests below use delta CEI in place of CEI
-  species <- proteomes[, .(cair = median(cair), code = mode_code(code)), by = species]
-  genera <- proteomes[, .(cair = median(cair), code = mode_code(code)), by = genus]
-  test_levels(" of delta CEI")
-  summarize_tests(" of delta CEI")
+  proteomes_cei <- proteomes # CEI of all proteomes (sections 1-3)
+  seed_after_cei <- .Random.seed # both runs below use the same permutations
+  for (gc_value in c("Delta CEI", "CEI null")){
+    value_name <- ifelse(gc_value == "Delta CEI", " of delta CEI", " of CEI null")
+    .Random.seed <- seed_after_cei
+    gc <- fread(gc_file, select = c("Organism_ID", gc_value))
+    colnames(gc) <- c("org", "value")
+    gc <- gc[!is.na(gc$value), ] # proteomes without a matched genome assembly are left out (not counted as missing values)
+    proteomes <- merge(proteomes_cei, gc, by = "org")
+    proteomes$cair <- proteomes$value # the tests below use delta CEI (or the expected CEI) in place of CEI
+    species <- proteomes[, .(cair = median(cair), code = mode_code(code)), by = species]
+    genera <- proteomes[, .(cair = median(cair), code = mode_code(code)), by = genus]
+    test_levels(value_name)
+    summarize_tests(value_name)
 
-  ## 4.1. Agreement with the tests of CEI (proteome level)
-  cei_tests <- fread("Bifurcation tests (proteome).csv")
-  both <- merge(cei_tests[cei_tests$testable, ], tests_proteome[tests_proteome$testable, ], by = "test", suffixes = c("", "_d"))
-  both <- both[order(as.numeric(sub("T", "", both$test))), ] # T1, T2, ... (not T1, T10, ...)
-  comparison <- data.frame(item = c("tested", "rho_effect_vs_cei", "same_direction_vs_cei", "separated_on_cei", "separated_on_both",
-                                    "lost_after_gc_adjustment", "gained_after_gc_adjustment"),
-                           value = c(nrow(both), cor(both$re, both$re_d, method = "spearman"),
-                                     paste0(sum(sign(both$re - 0.5) == sign(both$re_d - 0.5)), "/", nrow(both)),
-                                     sum(both$separated), sum(both$separated & both$separated_d),
-                                     paste(both$test[both$separated & !both$separated_d], collapse = " "),
-                                     paste(both$test[!both$separated & both$separated_d], collapse = " ")))
-  fwrite(comparison, "Bifurcation tests of delta CEI vs CEI.csv")
-  print(comparison)
+    ## 4.1. Agreement with the tests of CEI (proteome level)
+    cei_tests <- fread("Bifurcation tests (proteome).csv")
+    both <- merge(cei_tests[cei_tests$testable, ], tests_proteome[tests_proteome$testable, ], by = "test", suffixes = c("", "_d"))
+    both <- both[order(as.numeric(sub("T", "", both$test))), ] # T1, T2, ... (not T1, T10, ...)
+    comparison <- data.frame(item = c("tested", "rho_effect_vs_cei", "same_direction_vs_cei", "separated_on_cei", "separated_on_both",
+                                      "lost_after_gc_adjustment", "gained_after_gc_adjustment"),
+                             value = c(nrow(both), cor(both$re, both$re_d, method = "spearman"),
+                                       paste0(sum(sign(both$re - 0.5) == sign(both$re_d - 0.5)), "/", nrow(both)),
+                                       sum(both$separated), sum(both$separated & both$separated_d),
+                                       paste(both$test[both$separated & !both$separated_d], collapse = " "),
+                                       paste(both$test[!both$separated & both$separated_d], collapse = " ")))
+    fwrite(comparison, paste0("Bifurcation tests", value_name, " vs CEI.csv"))
+    print(comparison)
+  }
 }

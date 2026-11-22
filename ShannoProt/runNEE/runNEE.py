@@ -1,3 +1,4 @@
+import os
 import sys
 from Human_proteome_2020_02 import dat_to_proteome_table
 from NEE_decomposition import nee_decomposition, check_against_table_s3
@@ -5,6 +6,8 @@ from HuRI_PubMed_covariates import study_bias_covariates
 from Human_indicator_statistics import prepare_data, human_indicator_statistics
 from NEE_nulls import nee_null_models
 from Table_S5 import table_s5
+from Disease_definition_sensitivity import disease_definition_sensitivity
+from Length_covariates import length_covariates
 
 # Table S3 of the preprint (Supplementary_materials/EMIP_supplementary_files), or the same table as XLSX
 table_s3 = sys.argv[1] if len(sys.argv) > 1 else "../Supplementary_materials/EMIP_supplementary_files/w%entries_w%diseases(accumulated)_w%uniprot_w%orpha(processed).csv"
@@ -23,3 +26,11 @@ human_indicator_statistics(table_s3, "NEE decomposition.csv", "Study bias covari
 
 table_s5(table_s3, "NEE decomposition.csv", "Study bias covariates.csv", "Table_S5.csv",
          "Table_S5.xlsx")  # Table S5 of the article (input of "DTK test & Errorbars.R")
+
+# rev 26: other definitions of the disease categories and covariates of protein length (Table S6)
+disease_definition_sensitivity("Human analysis data.csv",
+                               "../Supplementary_materials/EMIP_supplementary_files/w%entries(dropped)_w%diseases(expanded)_w%uniprot_w%orpha(processed).csv",
+                               "Disease definition sensitivity.json")  # largest value instead of the sum, excluded proteins, reference group
+if os.path.exists("gnomad.v2.1.1.lof_metrics.by_gene.txt.bgz"):  # requires the gnomAD, GTEx and CEGv2 files
+    length_covariates("Human analysis data.csv", "Human proteome 2020_02.tab", "gnomad.v2.1.1.lof_metrics.by_gene.txt.bgz",
+                      "GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz", "CEGv2.txt", "Length covariates.json")
