@@ -1,6 +1,6 @@
 ShannoProt
 =====================================
-**Amino-acid evenness across the tree of life and protein correlates of rare human disease**
+**Amino-acid evenness across the tree of life and protein-level correlates of rare diseases in humans**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-important.svg?style=plastic&logo=open-source-initiative&logoColor=f5f5f5)](LICENSE)
 
@@ -131,7 +131,7 @@ python ../ShannoProt/runTables/runTables.py
 | Tables 3–5, Sections 3.4–3.7 | [runNEE.py](ShannoProt/runNEE/runNEE.py) | NEE decomposition.csv, Study bias covariates.csv, NEE null models.csv, Human indicator statistics.json, Table_S5.csv, Disease definition sensitivity.json, Length covariates.json |
 | Section 4.3, Table S6 | [runCAIR.py](ShannoProt/runCAIR/runCAIR.py) `--current` | Current release check.csv, Current release check summary.json |
 | Figure 5 | [DTK test & Errorbars.R](R_codes/EMIP_analyses/Human%20proteome%20analysis/DTK%20test%20%26%20Errorbars.R) | Fig5_ColouredAges.svg, Fig5_BlackMain.svg |
-| Figure S1 | [Human proteome networks.R](R_codes/EMIP_analyses/Network%20visualization/Human%20proteome%20networks.R) | Fig6A.svg … Fig6P.svg |
+| Figure S1 | [Human proteome networks.R](R_codes/EMIP_analyses/Network%20visualization/Human%20proteome%20networks.R) | Fig6A.svg … Fig6P.svg (numbered as in the preprint) |
 | Tables S1–S6 | [runTables.py](ShannoProt/runTables/runTables.py) | Supplementary tables/Table_S1.xlsx … Table_S6.xlsx |
 
 <p align="justify">Figures 1 and S2 and the tree of Figure 2A are drawings. The figures of the article are in <a href="Figures">Figures</a>. <a href="R_codes/EMIP_analyses/Human%20proteome%20analysis/Likert%20plots.R">Likert plots.R</a> draws the indicators by rank of disease occurrence (Figure 5 of the preprint).</p>

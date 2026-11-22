@@ -201,7 +201,7 @@ def table_s3_extra(cei_file='Bifurcation tests (proteome).csv', null_file='Bifur
     match = match.reindex([k for k in ('accession', 'accession (other version)', 'GenBank accession of a RefSeq genome', 'taxid', 'not matched')
                            if k in match.index])
     ceiling = float(pd.read_csv(maxima_file).iloc[0]['Highest CEI'])
-    read_me = ['Expected CEI: Brunner-Munzel tests (proteome level, as above) of the CEI expected under random translation at the genome GC content (CEI null of Table S1), '
+    read_me = ['Expected CEI: Brunner-Munzel tests (proteome level, as above) of the CEI expected under random translation at the genome GC content (Table S1), '
                'with the RE and the separation of CEI (Table S2) and whether the two effects point in the same direction: how much of the taxonomic pattern of CEI the genome GC '
                'content alone predicts.',
                "Phylogenetic signal: Pagel's lambda (R package phylolm 2.6.5 with ape 5.8.1) of CEI, genome GC, the expected CEI and delta CEI on the species-level bacterial (bac120) and "
@@ -209,7 +209,7 @@ def table_s3_extra(cei_file='Bifurcation tests (proteome).csv', null_file='Bifur
                'to 0 (1 df). Eukaryotes are not in GTDB. Prokaryotic proteomes matched to a GTDB genome by: %s.'
                % '; '.join('%s, %s' % (k, format(int(v), ',')) for k, v in match.items()),
                "PGLS: phylogenetic generalized least squares (Pagel's lambda) of CEI on GC and GC^2, with the R2 of the same model fitted by ordinary least squares.",
-               'Above the GC maximum: proteomes with a CEI above the highest CEI of the uniform-GC null (%.4f, genetic code 11), by GC assignment (Match type of Table S1), '
+               'Above the GC maximum: proteomes with a CEI above the highest CEI of the uniform-GC null (%.4f, genetic code 11), by GC assignment (Match type, from the column Assembly match of Table S1), '
                'assembly level, RefSeq category, genome quality (CheckM2 completeness and contamination of the GTDB genome) and genome origin (NCBI genome category of the GTDB '
                'genome); strictest subset: GC from an assembly of the same taxid, complete or chromosome-level, high quality and not metagenome-assembled; codon-position null: '
                'proteomes above the maximum whose genus has a codon-position null (one annotated genome per genus), and how many of them lie below it.' % ceiling]
@@ -251,7 +251,7 @@ def table_s6(sensitivity_file='Disease definition sensitivity.json', length_file
                      'Reference without UniProt disease annotation': ci_text(s['joint logistic ORs, reference without UniProt disease'][k],
                                                                              per.get(k, 1))})
     ga = {lab: s['gene age, extremely rare vs rare (File S1), %s' % lab]['relative effect, p'] for lab in ('sum', 'maximum')}
-    rows.append({'Measure': 'Gene age, extremely rare vs rare (File S1): relative effect (p)', 'Indicator or covariate': 'Gene age',
+    rows.append({'Measure': 'Gene age, extremely rare vs rare (File S1; proteins with a gene age): relative effect (p)', 'Indicator or covariate': 'Gene age',
                  'Article': '%.3f (p = %.2g)' % tuple(ga['sum']), 'Largest value': '%.3f (p = %.2g)' % tuple(ga['maximum'])})
     rows.append({'Measure': 'Proteins: extremely rare / rare', 'Indicator or covariate': '',
                  'Article': '%d / %d' % tuple(s['n extremely rare / rare, sum']), 'Largest value': '%d / %d' % tuple(s['n extremely rare / rare, maximum'])})
